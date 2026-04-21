@@ -57,7 +57,7 @@ Expect at least one `branch` ruleset with `enforcement: active` on `~DEFAULT_BRA
 ## Conventions
 
 - Branch naming: `chore/*`, `feat/*`, `fix/*`
-- Commit messages follow Conventional Commits
+- Commit messages: see [Commit Messages](#commit-messages) section below
 - `main` is the primary branch
 - All changes go through PR
 
@@ -66,3 +66,31 @@ Expect at least one `branch` ruleset with `enforcement: active` on `~DEFAULT_BRA
 - A malicious caller workflow passing crafted inputs to `action.yml` — we quote defensively, but a new input added without quoting is an injection risk. Review every new input carefully.
 - A compromised `docker/setup-qemu-action` or `docker/setup-buildx-action` upstream — SHA pinning pins to a *specific* version; if we update the SHA, we inherit whatever is at the new SHA. Vet the diff before bumping.
 - A compromised `jackin-project/jackin` CI pipeline — addressed in that repo, not here.
+
+## Commit Messages
+
+All commits in this repository MUST follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).
+
+Subject format: `<type>[optional scope][!]: <description>`
+
+Allowed types:
+
+| Type       | Use for                                                |
+| ---------- | ------------------------------------------------------ |
+| `feat`     | New user-visible feature                               |
+| `fix`      | Bug fix                                                |
+| `docs`     | Documentation-only change                              |
+| `style`    | Formatting, whitespace; no logic change                |
+| `refactor` | Internal restructuring; no behavior change             |
+| `perf`     | Performance improvement                                |
+| `test`     | Adding or updating tests                               |
+| `build`    | Build system, tooling, dependencies                    |
+| `ci`       | CI configuration                                       |
+| `chore`    | Routine maintenance (release, merge, deps)             |
+| `revert`   | Reverts a prior commit                                 |
+
+Scope is optional but encouraged when it clarifies the change area.
+
+Breaking changes use `!` after the type/scope (`feat!:` or `feat(api)!:`) and include a `BREAKING CHANGE:` footer in the body.
+
+PR squash-merge: the PR title becomes the commit subject, so PR titles must also follow this convention.
