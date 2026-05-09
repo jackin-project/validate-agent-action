@@ -3,7 +3,7 @@ set -euo pipefail
 
 rm -f /tmp/jackin-validate
 
-VERSION="${1:-latest}"
+VERSION="${1:-latest-build}"
 REPO="jackin-project/jackin"
 WORKFLOW_FILE="ci.yml"
 
@@ -43,7 +43,7 @@ download_from_latest_build() {
   local artifact_zip="/tmp/jackin-validate-artifact.zip"
   local run_id artifact_id archive checksum
 
-  echo "Resolving latest successful ${WORKFLOW_FILE} build for ${target}..."
+  echo "Resolving latest preview validator build for ${target}..."
   # Pick the first match inside jq rather than piping through `head -n1`:
   # under `set -o pipefail`, head closing the pipe early can SIGPIPE the
   # upstream process, surfacing as exit 141 and flaking CI unpredictably.
@@ -53,7 +53,7 @@ download_from_latest_build() {
     --jq '[.workflow_runs[] | select(.status == "completed" and .conclusion == "success")] | .[0].id // empty')
 
   if [ -z "$run_id" ]; then
-    echo "Failed to resolve a successful ${WORKFLOW_FILE} run on main from ${REPO}" >&2
+    echo "Failed to resolve a preview validator build from ${REPO}" >&2
     exit 1
   fi
 
@@ -85,13 +85,7 @@ download_from_latest_build() {
   tar -xzf "$archive" -C /tmp jackin-validate
 }
 
-if [ "$VERSION" = "latest" ]; then
-  TAG=$(gh api "repos/${REPO}/releases/latest" --jq '.tag_name')
-  if [ -z "$TAG" ]; then
-    echo "Failed to resolve latest release tag from ${REPO}" >&2
-    exit 1
-  fi
-elif [ "$VERSION" = "latest-build" ]; then
+if [ "$VERSION" = "latest" ] || [ "$VERSION" = "latest-build" ]; then
   TAG=""
 else
   VERSION_CLEAN="${VERSION#v}"
@@ -104,7 +98,7 @@ fi
 
 TARGET=$(resolve_target "$(uname -m)")
 
-if [ "$VERSION" = "latest-build" ]; then
+if [ "$VERSION" = "latest" ] || [ "$VERSION" = "latest-build" ]; then
   download_from_latest_build "$TARGET"
 else
   download_from_release "$TAG" "$TARGET"
@@ -112,7 +106,7 @@ fi
 
 chmod +x /tmp/jackin-validate
 echo "/tmp" >> "$GITHUB_PATH"
-if [ "$VERSION" = "latest-build" ]; then
+if [ "$VERSION" = "latest" ] || [ "$VERSION" = "latest-build" ]; then
   echo "jackin-validate latest-build installed"
 else
   echo "jackin-validate ${TAG} installed"
