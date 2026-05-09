@@ -2,6 +2,8 @@
 
 GitHub Action to validate [jackin](https://github.com/jackin-project/jackin) agent repos against the project contract.
 
+jackin is experimental preview software and has not reached a stable release yet. This action defaults to the newest preview `jackin-validate` build so role validation follows the current preview contract.
+
 ## Checks
 
 1. **Required files** — `Dockerfile`, `jackin.agent.toml`, `.dockerignore`, `.gitignore`
@@ -20,7 +22,7 @@ jobs:
       - uses: jackin-project/validate-agent-action@v1
 ```
 
-To validate against the latest successful `jackin` build on `main` instead of the latest tagged release:
+The default is equivalent to setting `jackin-version: latest-build` explicitly:
 
 ```yaml
 jobs:
@@ -38,7 +40,7 @@ jobs:
 | Input | Default | Description |
 |-------|---------|-------------|
 | `path` | `.` | Path to the agent repo |
-| `jackin-version` | `latest` | Version of `jackin-validate` to use. Accepts a release version like `0.5.0`, `latest`, or `latest-build` for the newest successful `main` CI artifact |
+| `jackin-version` | `latest-build` | Version of `jackin-validate` to use. Use `latest-build` for the newest preview validator artifact |
 | `build-platforms` | `linux/amd64,linux/arm64` | Docker platforms to build |
 | `skip-build` | `false` | Skip Docker build step |
 
