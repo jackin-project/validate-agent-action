@@ -5,7 +5,7 @@ REPO_PATH="${1:-.}"
 IMAGE="${2}"
 PLATFORMS="${3:-linux/amd64,linux/arm64}"
 
-CONSTRUCT_VERSION=$(jackin-validate --print-construct-version "${REPO_PATH}")
+CONSTRUCT_VERSION=$(jackin-role construct-version "${REPO_PATH}")
 
 short_sha="${GITHUB_SHA::7}"
 

@@ -4,7 +4,7 @@ set -euo pipefail
 REPO_PATH="${1:-.}"
 PLATFORMS="${2:-linux/amd64,linux/arm64}"
 
-CONSTRUCT_VERSION=$(jackin-validate --print-construct-version "${REPO_PATH}")
+CONSTRUCT_VERSION=$(jackin-role construct-version "${REPO_PATH}")
 
 echo "Building Docker image for platforms: ${PLATFORMS}..."
 
